@@ -1,0 +1,62 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>tech.ztimes.power-notes</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>Power-notes</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+  ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <applicationListeners>
+        <listener class="tech.ztimes.powernotes.message.EditorNoteListener" topic="tech.ztimes.powernotes.message.NoteListener" />
+    </applicationListeners>
+
+    <projectListeners>
+        <listener class="tech.ztimes.powernotes.listener.EditorManagerListener"
+                  topic="com.intellij.openapi.fileEditor.FileEditorManagerListener" />
+        <listener class="tech.ztimes.powernotes.listener.ProjectListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener" />
+    </projectListeners>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+            parentId="tools"
+            instance="tech.ztimes.powernotes.config.ApplicationConfigurable"
+            id="tech.ztimes.powernotes.config.ApplicationConfigurable"
+            displayName="PowerNotes" />
+        <notificationGroup displayType="BALLOON" id="PowerNotes" />
+        <statusBarWidgetFactory implementation="tech.ztimes.powernotes.ServerStatusBarWidgetFactory" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.config.ApplicationSettings" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.remote.WsClient" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.remote.RestClient" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.service.NoteService" />
+        <projectService serviceImplementation="tech.ztimes.powernotes.service.FlowService" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.repository.NoteRepository" preload="true" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.repository.FlowRepository" preload="true" />
+        <applicationService serviceImplementation="tech.ztimes.powernotes.repository.FlowNoteRelationRepository" preload="true" />
+        <projectService serviceImplementation="tech.ztimes.powernotes.service.FlowNoteRelationService" />
+        <projectService serviceImplementation="tech.ztimes.powernotes.listener.AfterLineInlayListener" />
+        <toolWindow factoryClass="tech.ztimes.powernotes.PowerNotesToolWindowFactory" id="Power Notes"
+                    anchor="bottom" canCloseContents="false" />
+        <intentionAction>
+            <className>tech.ztimes.powernotes.action.intention.ToggleIntentionNotePopupEditorAction</className>
+        </intentionAction>
+    </extensions>
+</idea-plugin>
