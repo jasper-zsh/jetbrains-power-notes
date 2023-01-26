@@ -41,6 +41,7 @@
             instance="tech.ztimes.powernotes.config.ApplicationConfigurable"
             id="tech.ztimes.powernotes.config.ApplicationConfigurable"
             displayName="PowerNotes" />
+        <postStartupActivity implementation="tech.ztimes.powernotes.listener.ProjectListener" />
         <notificationGroup displayType="BALLOON" id="PowerNotes" />
         <statusBarWidgetFactory implementation="tech.ztimes.powernotes.ServerStatusBarWidgetFactory" />
         <applicationService serviceImplementation="tech.ztimes.powernotes.config.ApplicationSettings" />

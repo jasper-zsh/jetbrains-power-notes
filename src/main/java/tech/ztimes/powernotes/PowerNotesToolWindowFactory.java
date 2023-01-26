@@ -10,7 +10,7 @@ import tech.ztimes.powernotes.ui.flow.FlowToolWindowPanel;
 public class PowerNotesToolWindowFactory implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        toolWindow.getContentManager().addContent(ContentFactory.SERVICE.getInstance().createContent(
+        toolWindow.getContentManager().addContent(ContentFactory.getInstance().createContent(
                 new FlowToolWindowPanel(project), "Flow", false
         ));
     }

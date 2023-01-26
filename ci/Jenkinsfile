@@ -1,0 +1,26 @@
+pipeline {
+  agent {
+    kubernetes {
+      inheritFrom "gradle"
+    }
+  }
+
+  environment {
+    VERSION = "1.0"
+    PLUGIN_VERSION = "${VERSION}-${GIT_BRANCH}-SNAPSHOT"
+  }
+
+  stages {
+    stage("Build plugin") {
+      steps {
+        container("gradle") {
+          sh """
+          gradle buildPlugin \
+            -Pproject.version=${VERSION}
+          """
+          archiveArtifacts artifacts: "build/distributions/*.zip", allowEmptyArchive: false, onlyIfSuccessful: true
+        }
+      }
+    }
+  }
+}
