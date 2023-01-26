@@ -16,7 +16,7 @@ pipeline {
         container("gradle") {
           sh """
           gradle buildPlugin \
-            -Pproject.version=${VERSION}
+            -Pproject.version=${PLUGIN_VERSION}
           """
           archiveArtifacts artifacts: "build/distributions/*.zip", allowEmptyArchive: false, onlyIfSuccessful: true
         }
