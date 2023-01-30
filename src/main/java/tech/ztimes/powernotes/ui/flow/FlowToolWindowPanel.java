@@ -29,6 +29,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.util.Objects;
 
 @Slf4j
 public class FlowToolWindowPanel extends BorderLayoutPanel implements Disposable {
@@ -102,14 +103,21 @@ public class FlowToolWindowPanel extends BorderLayoutPanel implements Disposable
         splitPane.setSecondComponent(noteListDecorator.createPanel());
 
         project.getMessageBus().connect(this).subscribe(FlowListener.TOPIC, new FlowListener() {
+            boolean sameProject(Flow flow) {
+                return Objects.equals(flow.getProjectName(), project.getName());
+            }
 
             @Override
             public void save(Flow flow) {
-                flowListModel.addElement(flow);
+                if (!sameProject(flow)) return;
+                if (!flowListModel.contains(flow)) {
+                    flowListModel.addElement(flow);
+                }
             }
 
             @Override
             public void remove(Flow flow) {
+                if (!sameProject(flow)) return;
                 flowListModel.removeElement(flow);
             }
 
@@ -125,6 +133,11 @@ public class FlowToolWindowPanel extends BorderLayoutPanel implements Disposable
         });
 
         project.getMessageBus().connect(this).subscribe(FlowNoteRelationListener.TOPIC, new FlowNoteRelationListener() {
+            boolean sameProject(FlowNoteRelation relation) {
+                var flow = FlowRepository.getInstance().get(relation.getFlowId());
+                return flow != null && Objects.equals(flow.getProjectName(), project.getName());
+            }
+
             @Override
             public void save(FlowNoteRelation relation) {
                 refresh(relation);
@@ -136,6 +149,9 @@ public class FlowToolWindowPanel extends BorderLayoutPanel implements Disposable
             }
 
             private void refresh(FlowNoteRelation relation) {
+                if (!sameProject(relation)) {
+                    return;
+                }
                 var flowService = FlowService.getInstance(project);
                 if (flowService.getActivated() != null && flowService.getActivated().getId().equals(relation.getFlowId())) {
                     loadNoteList();
@@ -154,18 +170,6 @@ public class FlowToolWindowPanel extends BorderLayoutPanel implements Disposable
         }
         var rels = FlowNoteRelationRepository.getInstance().list(activatedFlow.getId());
         noteListModel.add(rels);
-//        if (selected != null) {
-//            for (int i = 0; i < noteListModel.getSize(); i ++) {
-//                var rel = noteListModel.getElementAt(i);
-//                if (rel.getFlowId().equals(selected.getFlowId()) && rel.getNoteId().equals(selected.getNoteId())) {
-//                    final int index = i;
-//                    SwingUtilities.invokeLater(() -> {
-//                        noteList.setSelectedIndex(index);
-//                    });
-//                    break;
-//                }
-//            }
-//        }
     }
 
     public void loadFlowList() {

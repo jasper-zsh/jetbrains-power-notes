@@ -35,6 +35,14 @@ public class FlowRepository {
         return ApplicationManager.getApplication().getService(FlowRepository.class);
     }
 
+    public Flow get(Long id) {
+        var query = equal(ID, id);
+
+        try (var resultSet = repo.retrieve(query)) {
+            return resultSet.stream().findFirst().orElse(null);
+        }
+    }
+
     public List<Flow> list() {
         return repo.stream().collect(Collectors.toList());
     }
